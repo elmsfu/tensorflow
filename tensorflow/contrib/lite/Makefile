@@ -32,6 +32,10 @@ ifeq ($(CROSS),riscv)
   TARGET_ARCH := riscv
   TARGET_TOOLCHAIN_PREFIX := riscv32-unknown-elf-
 endif
+ifeq ($(CROSS),picosoc)
+  TARGET_ARCH := riscrv
+  TARGET_TOOLCHAIN_PREFIX := riscv32-unknown-elf-
+endif
 ifeq ($(CROSS),stm32f7)
   TARGET_ARCH := armf7
   TARGET_TOOLCHAIN_PREFIX := arm-none-eabi-
@@ -59,6 +63,13 @@ endif
 
 ifeq ($(TARGET_ARCH),riscv)
 #        CXXFLAGS += -march=gap8
+        CXXFLAGS += -DTFLITE_MCU
+	LIBS += -ldl
+	BUILD_TYPE := micro
+endif
+
+ifeq ($(TARGET_ARCH),riscrv)
+        CXXFLAGS += -march=rv32i
         CXXFLAGS += -DTFLITE_MCU
 	LIBS += -ldl
 	BUILD_TYPE := micro
@@ -93,6 +104,7 @@ LDOPTS += -L/usr/local/lib
 ARFLAGS := -r
 
 INCLUDES := \
+-I.. \
 -I. \
 -I$(MAKEFILE_DIR)/../../../ \
 -I$(MAKEFILE_DIR)/downloads/ \
