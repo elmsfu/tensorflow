@@ -70,6 +70,8 @@ endif
 
 ifeq ($(TARGET_ARCH),riscrv)
         CXXFLAGS += -march=rv32i
+        CXXFLAGS += -fno-rtti -fmessage-length=0 -fno-exceptions -fno-builtin -ffunction-sections -fdata-sections
+        CXXFLAGS += -funsigned-char -MMD
         CXXFLAGS += -DTFLITE_MCU
 	LIBS += -ldl
 	BUILD_TYPE := micro
@@ -104,7 +106,6 @@ LDOPTS += -L/usr/local/lib
 ARFLAGS := -r
 
 INCLUDES := \
--I.. \
 -I. \
 -I$(MAKEFILE_DIR)/../../../ \
 -I$(MAKEFILE_DIR)/downloads/ \

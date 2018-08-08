@@ -383,7 +383,7 @@ class Interpreter {
   profiling::Profiler* GetProfiler() { return profiler_; }
 
   // The default capacity of `tensors_` vector.
-  static constexpr int kTensorsReservedCapacity = 128;
+  static constexpr int kTensorsReservedCapacity = 4;
   // The capacity headroom of `tensors_` vector before calling ops'
   // `prepare` and `invoke` function. In these functions, it's guaranteed
   // allocating up to `kTensorsCapacityHeadroom` more tensors won't invalidate
