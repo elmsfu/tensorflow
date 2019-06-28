@@ -1,0 +1,146 @@
+{
+  "version": 3,
+  "operator_codes": [
+    {
+      "builtin_code": "DEPTHWISE_CONV_2D",
+      //"builtin_code": "CONV_2D",
+      "version": 1
+    }
+  ],
+  "subgraphs": [
+    {
+      "tensors": [
+	{
+	  "shape": [
+	    1,
+	    2,
+	    4,
+	    1
+	  ],
+	  "type": "UINT8",
+	  "buffer": 1,
+	  "name": "input",
+	  "quantization": {
+	    "scale": [1],
+	    // "min": [
+            //   -128
+	    // ],
+	    // "max": [
+            //   127
+	    // ]
+	  },
+	  "is_variable": 0
+	},
+	{
+	  "shape": [
+	    1,
+	  ],
+	  "type": "INT32",
+	  "buffer": 2,
+	  "name": "bias",
+	  "quantization": {
+	    "scale": [1],
+	  },
+	  "is_variable": 0
+	},
+	{
+	  "shape": [
+	    1,
+	    2,
+	    1,
+	    1
+	  ],
+	  "type": "UINT8",
+	  "buffer": 3,
+	  "name": "weights",
+	  "quantization": {
+	    "scale": [1],
+	  },
+	  "is_variable": 0
+	},
+	{
+	  "shape": [
+	    1,
+	    1,
+	    4,
+	    1
+	  ],
+	  "type": "UINT8",
+	  "buffer": 4,
+	  "name": "output",
+	  "quantization": {
+	    "scale": [1],
+	  },
+	  "is_variable": 0
+	}
+      ],
+      "inputs" : [
+	0
+      ],
+      "outputs": [
+	3
+      ],
+      "operators": [
+	{
+	  "opcode_index": 0,
+	  "inputs" : [
+	    0,
+	    2,
+	    1,
+	  ],
+	  "outputs": [
+	    3
+	  ],
+          "builtin_options_type": "DepthwiseConv2DOptions",
+	  //"builtin_options_type": "Conv2DOptions",
+          "builtin_options": {
+            "padding": "VALID",
+            "stride_w": 1,
+            "stride_h": 1,
+	    "depth_multiplier": 1,
+            "fused_activation_function": "RELU",
+            "dilation_w_factor": 1,
+            "dilation_h_factor": 1
+          },
+          "custom_options_format": 0,
+          "mutating_variable_inputs": [
+
+          ]
+        }
+      ],
+    }
+  ],
+  "description": "Test graph",
+  "buffers": [
+    {
+    },
+    {
+      "data": [
+	1,
+	2,
+	3,
+	4,
+	8,
+	9,
+	10,
+	11,
+      ]
+    },
+    {
+      "data": [
+	32,
+	0,
+	0,
+	0,
+      ]
+    },
+    {
+      "data": [
+	1,
+	2,
+      ]
+    },
+    {
+    },
+  ]
+}
