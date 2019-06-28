@@ -1,17 +1,25 @@
-TFLITE_ROOT = third_party/tensorflow/tensorflow/contrib/lite
+TFLITE_ROOT = $(CURDIR)/../..
+TF_ROOT = $(CURDIR)/../../../..
 FLATC = flatc-build/flatc
 SCHEMA = $(TFLITE_ROOT)/schema/schema.fbs
 LIBTFLITE = $(TFLITE_ROOT)/tools/make/gen/linux_x86_64/lib/libtensorflow-lite.a
 
+# MAKEFILE_DIR=$(TFLITE_ROOT)/experimental/micro/tools/make
+# include $(MAKEFILE_DIR)/third_party_downloads.inc
+# THIRD_PARTY_DOWNLOADS :=
+# $(eval $(call add_third_party_download,$(GEMMLOWP_URL),$(GEMMLOWP_MD5),gemmlowp,))
+# $(eval $(call add_third_party_download,$(FLATBUFFERS_URL),$(FLATBUFFERS_MD5),flatbuffers,))
+
+
 TFLITE_DOWNLOADS = $(TFLITE_ROOT)/tools/make/downloads
-TFLITE_DEP_DOWNLOAD = ./$(TFLITE_ROOT)/tools/make/download_dependencies.sh
+TFLITE_DEP_DOWNLOAD = $(TFLITE_ROOT)/tools/make/download_dependencies.sh
 
 EXEC_TEST_GRAPH = exec_test_graph
 
 CXXFLAGS = -g --std=c++11 -fPIC -pthread
-CPPFLAGS = -I third_party/tensorflow -I$(TFLITE_ROOT)/tools/make/downloads/flatbuffers/include
+CPPFLAGS = -I $(TF_ROOT) -I$(TFLITE_ROOT)/tools/make/downloads/flatbuffers/include
 
-TEST_JSONS = $(wildcard test/test*.json)
+TEST_JSONS = $(wildcard tests/test*.json)
 
 TEST_TFS   = $(patsubst %.json,%.tflite,$(TEST_JSONS))
 TEST_ASM   = $(patsubst %.json,%.asm,$(TEST_JSONS))
@@ -29,9 +37,12 @@ all: tests
 
 clean: clean_tflite clean_tests
 
+# THIRD_PARTY_TARGETS := $(foreach DOWNLOAD,$(THIRD_PARTY_DOWNLOADS),$(eval $(call create_download_rule,$(DOWNLOAD))))
+# third_party_downloads: $(THIRD_PARTY_TARGETS)
+
 $(FLATC):
 	mkdir -p $(dir $@)
-	cd $(dir $@) && cmake $(CURDIR)/third_party/flatbuffers && $(MAKE) flatc
+	cd $(dir $@) && cmake $(TFLITE_DOWNLOADS)/flatbuffers && $(MAKE) flatc
 
 tests: $(TEST_OUTPUTS)
 	python utils/data_check.py -o 0x10000 -c 1 -d 1,2,4,2
@@ -56,7 +67,7 @@ tflite: $(FLATC)
 
 clean_tflite:
 	$(RM) -r tflite
-	$(MAKE) -C third_party/tensorflow -f tensorflow/contrib/lite/tools/make/Makefile clean
+	$(MAKE) -C $(TF_ROOT) -f tensorflow/contrib/lite/tools/make/Makefile clean
 
 $(TFLITE_DOWNLOADS): $(TFLITE_DEP_DOWNLOAD)
 	$(TFLITE_DEP_DOWNLOAD)
@@ -67,7 +78,7 @@ $(EXEC_TEST_GRAPH): src/exec_test_graph.o $(LIBTFLITE)
 	g++ --std=c++11 -o $@ $^ -lm -pthread -ldl
 
 $(LIBTFLITE): $(TFLITE_DOWNLOADS)
-	$(MAKE) -C third_party/tensorflow -f tensorflow/contrib/lite/tools/make/Makefile
+	$(MAKE) -C $(TF_ROOT) -f tensorflow/lite/tools/make/Makefile
 
 .PRECIOUS: %.tflite %.bin %.asm
 
